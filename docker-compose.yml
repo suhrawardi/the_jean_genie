@@ -1,0 +1,38 @@
+version: '3'
+
+networks:
+  backend:
+  frontend:
+
+services:
+
+  db:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: unless-stopped
+    volumes:
+      - ./db:/var/lib/mysql
+    env_file:
+      - ./.env
+    networks:
+      - backend
+
+  genie:
+    build:
+      context: app
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+      - "81:80" #or 80:80 if Genie.jl is used as a frontend
+    env_file:
+      - ./.env
+    volumes:
+      - ./app:/home/genie/app
+    entrypoint:
+      - bin/server
+    networks:
+      - backend
+      - frontend
+    depends_on:
+      - db

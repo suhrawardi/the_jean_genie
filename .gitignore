@@ -1,0 +1,5 @@
+# Maintain environment variables out of version control
+*.env
+
+# Maintain database out of version control
+db/
